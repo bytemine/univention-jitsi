@@ -1,0 +1,119 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+#
+# Copyright 2019 Univention GmbH
+#
+# https://www.univention.de/
+#
+# All rights reserved.
+#
+# The source code of this program is made available
+# under the terms of the GNU Affero General Public License version 3
+# (GNU AGPL V3) as published by the Free Software Foundation.
+#
+# Binary versions of this program provided by Univention to you as
+# well as other copyrighted, protected or trademarked materials like
+# Logos, graphics, fonts, specific documentations and configurations,
+# cryptographic keys etc. are subject to a license agreement between
+# you and Univention and not subject to the GNU AGPL V3.
+#
+# In the case you use this program under the terms of the GNU AGPL V3,
+# the program is provided in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public
+# License with the Debian GNU/Linux or Univention distribution in file
+# /usr/share/common-licenses/AGPL-3; if not, see
+# <https://www.gnu.org/licenses/>.
+#
+
+import os
+import os.path
+import importlib
+import time
+import sys
+import random
+import string
+
+test_lib = os.environ.get('UCS_TEST_LIB', 'univention.testing.apptest')
+try:
+	test_lib = importlib.import_module(test_lib)
+except ImportError:
+	print('Could not import {}. Maybe set $UCS_TEST_LIB'.format(test_lib))
+	sys.exit(1)
+
+
+def _auth(chrome, user, password):
+	chrome.reload()
+	chrome.goto_portal()
+	chrome.click_portal_tile(u'Jitsi Meet')
+	time.sleep(2)
+	try:
+		# Bug 53288, ignore certificate warning and proceed
+		chrome.click_element('#details-button')
+		time.sleep(1)
+		chrome.click_element('#proceed-link')
+		time.sleep(2)
+	except AssertionError:
+		pass
+	chrome.enter_input_element('#enter_room_field', ''.join(random.sample(string.ascii_lowercase, 20)))
+	chrome.click_element('#enter_room_button')
+	time.sleep(5)
+	try:
+		# i am the host (optional)
+		chrome.click_element('#modal-dialog-ok-button')
+		time.sleep(3)
+	except Exception:
+		pass
+	u = chrome.find_all('[name=username]')[0]
+	u.send_keys(user.properties['username'])
+	p = chrome.find_all('[name=password]')[0]
+	p.send_keys(password)
+	chrome.click_element('#modal-dialog-ok-button')
+	time.sleep(5)
+
+
+def _login_ok(chrome, user, password='univention'):
+	_auth(chrome, user, password)
+	# leave button is the last toolbox-button
+	leave = chrome.find_all('[class=toolbox-button]')[-1]
+	from selenium.webdriver import ActionChains
+	ActionChains(chrome.driver).move_to_element(leave).click().perform()
+	time.sleep(5)
+	chrome.click_element('#enter_room_button')
+	time.sleep(2)
+
+
+def _login_fail(chrome, user, password='univention'):
+	_auth(chrome, user, password)
+	chrome.driver.find_elements_by_xpath("//*[contains(text(), 'Incorrect username or password')]")
+	time.sleep(2)
+
+
+def test_enabled_user(chrome, users):
+	with chrome.capture('jitsi_enabled_user'):
+		enabled_user = users('enabled_user', {'jitsimeetActivated': True})
+		_login_ok(chrome, enabled_user)
+
+
+def test_enabled_user_wrong_password(chrome, users):
+	with chrome.capture('jitsi_enabled_user_wrong_password'):
+		enabled_user = users('enabled_user', {'jitsimeetActivated': True})
+		_login_fail(chrome, enabled_user, password='wrongpw')
+
+
+def test_disabled_user(chrome, users):
+	with chrome.capture('jitsi_disabled_user'):
+		disabled_user = users('disabled_user', {'jitsimeetActivated': False})
+		_login_fail(chrome, disabled_user)
+
+
+if __name__ == '__main__':
+	from univention.config_registry import ConfigRegistry
+	ucr = ConfigRegistry()
+	ucr.load()
+	os.environ['UCS_TEST_SELENIUM_BASE_URL'] = 'https://{}'.format(ucr['ldap/master'])
+	print(os.environ['UCS_TEST_SELENIUM_BASE_URL'])
+	test_lib.run_test_file(__file__)

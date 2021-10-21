@@ -1,0 +1,94 @@
+# Copyright 2019 Univention GmbH
+#
+# http://www.univention.de/
+#
+# All rights reserved.
+#
+# The source code of this program is made available
+# under the terms of the GNU Affero General Public License version 3
+# (GNU AGPL V3) as published by the Free Software Foundation.
+#
+# Binary versions of this program provided by Univention to you as
+# well as other copyrighted, protected or trademarked materials like
+# Logos, graphics, fonts, specific documentations and configurations,
+# cryptographic keys etc. are subject to a license agreement between
+# you and Univention and not subject to the GNU AGPL V3.
+#
+# In the case you use this program under the terms of the GNU AGPL V3,
+# the program is provided in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public
+# License with the Debian GNU/Linux or Univention distribution in file
+# /usr/share/common-licenses/AGPL-3; if not, see
+# <http://www.gnu.org/licenses/>.
+
+version: '3'
+
+services:
+    # Frontend
+  web:
+    # Image was: jitsi/web:stable-5870
+    image: "docker.software-univention.de/jitsimeet-web:stable-5870"
+    restart: always
+    ports:
+    - 8888:80
+    container_name: jitsimeet_web
+    volumes:
+    - /var/lib/univention-appcenter/apps/jitsimeet/config/web:/config
+    - /var/lib/univention-appcenter/apps/jitsimeet/config/web/letsencrypt:/etc/letsencrypt
+    - /var/lib/univention-appcenter/apps/jitsimeet/config/transcripts:/usr/share/jitsi-meet/transcripts
+    networks:
+      meet.jitsi:
+        aliases:
+        - meet.jitsi  
+
+    # XMPP server, a
+  prosody:
+    # Image was: jitsi/prosody:stable-5870
+    image: "docker.software-univention.de/jitsimeet-prosody:stable-5870"
+    restart: always
+    expose:
+    - '5222'
+    - '5347'
+    - '5280'
+    volumes:
+    - /var/lib/univention-appcenter/apps/jitsimeet/config/prosody:/config
+    - /etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt:ro
+    networks:
+      meet.jitsi:
+        aliases:
+        - xmpp.meet.jitsi
+
+    # Focus component
+  jicofo:
+    # Image was: jitsi/jicofo:stable-5870
+    image: "docker.software-univention.de/jitsimeet-jicofo:stable-5870"
+    restart: always
+    volumes:
+    - /var/lib/univention-appcenter/apps/jitsimeet/config/jicofo:/config
+    depends_on:
+    - prosody
+    networks:
+      meet.jitsi:
+
+    # Video bridge
+  jvb:
+    # Image was: jitsi/jvb:stable-5870
+    image: "docker.software-univention.de/jitsimeet-jvb:stable-5870"
+    restart: always
+    ports:
+    - 10000:10000/udp
+    - '4443:4443'
+    volumes:
+    - /var/lib/univention-appcenter/apps/jitsimeet/config/jvb:/config
+    depends_on:
+    - prosody
+    networks:
+      meet.jitsi:
+
+# Custom network so all services can communicate using a FQDN
+networks:
+  meet.jitsi:

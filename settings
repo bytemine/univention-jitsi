@@ -1,0 +1,52 @@
+[jitsimeet/enable/auth]
+Type = Bool
+Required = True
+Show = Settings
+InitialValue = true
+Scope = outside
+Description = Enable authentication via UCS LDAP directory
+Description[de] = Authentifizierung über UCS LDAP Verzeichnis aktivieren
+Group = Authentication
+Group[de] = Authentifizierung
+
+[jitsimeet/enable/guests]
+Type = Bool
+Required = True
+Show = Settings
+InitialValue = true
+Scope = outside
+Description = Enable guest access. Without guest access enabled, every user needs to authenticate before joining a room.
+Description[de] = Gastzugang aktivieren. Ohne aktivierten Gastzugang muss sich jeder Benutzer vor dem Betreten eines Raums authentifizieren.
+Group = Authentication
+Group[de] = Authentifizierung
+
+[jitsimeet/ldap/filter]
+Type = String
+Required = True
+Show = Settings
+InitialValue = (&(uid=%u)(jitsimeetActivated=TRUE))
+Scope = outside
+Description = LDAP filter for the user authentication
+Description[de] = LDAP Filter für die Benutzerauthentifizierung
+Group = Authentication
+Group[de] = Authentifizierung
+
+[jitsimeet/docker/host/address]
+Type = String
+Required = True
+Show = Settings
+InitialValue = Change Me
+Scope = outside
+Description = Public IP address of the host (required for the videobridge to work)
+Description[de] = Öffentliche IP Adresse des Hosts (erforderlich für die Videobridge)
+Group = Networking
+
+[jitsimeet/public/url]
+Type = String
+Required = True
+Show = Settings
+InitialValue = https://jitsi.@%@hostname@%@.@%@domainname@%@
+Scope = outside
+Description = Public url for the web service
+Description[de] = Öffentliche URL für den Web Service
+Group = Networking

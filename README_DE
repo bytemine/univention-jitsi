@@ -1,0 +1,47 @@
+<p>
+	Die Einstellungen für die Jitsi-App können unter Jitsis App-Einstellungen hier im App-Center geändert werden.
+</p>
+<h2>
+	Authentifizierung
+</h2>
+<p>
+	Jitsi ermöglicht je nach Einstellungskombinationen unterschiedliche Anwendungsfälle bezüglich der Authentifizierung.
+</p>
+<h3>
+	Jeder Benutzer
+</h3>
+<p>
+	Um jedem Benutzer unabhängig von einem Benutzerkonto den Zugriff auf Jitsi zu ermöglichen, müssen Sie die <i>Authentifizierung</i> deaktivieren.
+</p>
+<h3>
+	Nur aktivierte Benutzer
+</h3>
+<p>
+	Um nur Benutzer mit einem Benutzerkonto im UCS-LDAP-Verzeichnis zuzulassen, die für Jitsi aktiviert sind, müssen Sie den <i>Gastzugang</i> deaktivieren. Jeder Benutzer muss sich dann authentifizieren, um Zugang zu einem Raum zu erhalten.
+</p>
+<h3>
+	Nur authentifizierte Benutzer können eine Konferenz starten
+</h3>
+<p>
+	Standardkonfiguration. Sie ermöglicht Gastbenutzern ohne Benutzerkonto die Teilnahme an einer Konferenz. Diese Konferenz muss von jedem authentifizierten Benutzer mit einem Konto im UCS-LDAP-Verzeichnis, das für Jitsi aktiviert ist, gestartet werden.
+</p>
+<h3>
+	Benutzer deaktivieren
+</h3>
+<p>
+	Zur Authentifizierung unterhält Jitsi einen Cache. Wenn ein Benutzer im UCS-LDAP-Verzeichnis für die Verwendung von Jitsi deaktiviert ist, wird der Zugang nicht sofort blockiert. Diese Cache-Zeit muss zuerst ablaufen.
+</p>
+<h2>
+	Firewall
+</h2>
+<p>
+	Wenn Jitsi Meet hinter einer Firewall betrieben wird, stellen Sie bitte sicher, dass der UDP-Port 10.000 geöffnet ist. Auf diesem lokalen UCS-System wurde der Port bei der Installation automatisch geöffnet.
+</p>
+
+<h2>Dokumentation</h2>
+
+<p>Diese App verwendet das Jitsi Meet Docker Compose-Setup. Sie finden die <a href="https://github.com/jitsi/docker-jitsi-meet/blob/master/README.md" target="_blank">Dokumentation auf GitHub</a>.</p>
+
+<h2>Unterstützung</h2>
+
+<p>Für diese App ist nur Unterstützung durch die Community verfügbar. Für Fragen rund um Jitsi auf UCS und dessen Integration öffnen Sie bitte ein <a href="https://help.univention.com/c/apps/" target="_blank">Thema unter Univention Help</a>. Für Fragen und Unterstützungsangebote rund um Jitsi im Allgemeinen <a href="https://jitsi.org/" target="_blank">besuchen Sie bitte jitsi.org</a>.</p>

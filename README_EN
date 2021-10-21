@@ -1,0 +1,46 @@
+<p>
+	The settings for the Jitsi app can be changed under Jitsi's app settings here in the App Center.
+</p>
+<h2>
+	Authentication
+</h2>
+<p>
+	Jitsi allows different use cases regarding authentication depending on the setting combinations.
+</p>
+<h3>
+	Every user
+</h3>
+<p>
+	To allow any user access to Jitsi, you need to disable <i>Authentication</i> in the app's settings.
+</p>
+<h3>
+	Only activated users
+</h3>
+<p>
+	To only allow users with accounts in the UCS LDAP directory that are activated for Jitsi, you need to disable <i>Guest access</i>. Every user then needs to authenticate to gain access to a room.
+</p>
+<h3>
+	Only authenticated users can start a conference
+</h3>
+<p>
+	This is the standard configuration. It allows guest users without account to join a conference. This conference needs to be started by any authenticated user with an account in the UCS LDAP directory activated for Jitsi.
+</p>
+<h3>
+	Deactivate users
+</h3>
+<p>
+	For authentication Jitsi maintains some cache. When a user in the UCS LDAP Directory is disabled to use Jitsi, access is not blocked immediately. This cache time needs to run out first.
+</p>
+<h2>
+	Firewall
+</h2>
+<p>
+	When Jitsi meet is operated behind a firewall, please make sure to open the UDP port 10,000. On this local UCS system the port was automatically opened during installation.
+</p>
+<h2>Documentation</h2>
+
+<p>This app uses the Jitsi Meet Docker Compose setup. Please find the <a href="https://github.com/jitsi/docker-jitsi-meet/blob/master/README.md" target="_blank">documentation at GitHub</a>.</p>
+
+<h2>Support</h2>
+
+<p>For this app only community support is available. For questions around Jitsi on UCS and its integration please open a <a href="https://help.univention.com/c/apps/" target="_blank">topic at Univention Help</a>. For questions and support offereings around Jitsi in general <a href="https://jitsi.org/" target="_blank">visit jitsi.org</a>.</p>
